@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Car Play</string>
+    <string name="main_car_play">Car Play</string>
+    <string name="btn_whistle">鸣笛</string>
+    <string name="btn_search">搜索设备</string>
+    <string name="btn_connect">连接</string>
+    <string name="btn_left">左转</string>
+    <string name="btn_right">右转</string>
+    <string name="btn_stop">停止</string>
+    <string name="btn_speed1">1</string>
+    <string name="btn_speed3">3</string>
+    <string name="btn_speed5">5</string>
+    <string name="btn_speed2">2</string>
+    <string name="btn_speed4">4</string>
+    <string name="btn_back">R</string>
+    <string name="left_45">左转45度</string>
+    <string name="straight_8s">前行8秒</string>
+    <string name="right_45">右转45度</string>
+    <string name="bottom_text">秋名山车队 荣誉出品</string>
 </resources>

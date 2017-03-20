@@ -8,16 +8,10 @@ import android.os.Message;
  * Created by Neon on 2017/2/24.
  */
 
-public class Car {
-
-    private static final int STATE_STOP = 0;//停止
-    private static final int STATE_FORWARD = 1;//前进
-    private static final int STATE_LEFT = 2;//左转
-    private static final int STATE_RIGHT = 3;//右转
-    private static final int STATE_BACKWARD = 4;//后退
+class Car {
 
     //控制小车
-    private static final char CONTROL_FORWARD = 'A';  //前进
+//    private static final char CONTROL_FORWARD = 'A';  //前进
     private static final char CONTROL_BACKWRAD = 'B'; //后退
     private static final char CONTROL_TURNLEFT = 'C';  //左转
     private static final char CONTROL_TURNRIGHT = 'D'; //右转
@@ -34,66 +28,77 @@ public class Car {
     private static final char CONTROL_RIGHT45 = 'M';  //右转弯45度前行
     private static final char CONTROL_CONNECT = 'N';  //蓝牙连接成功
     private static final char CONTROL_WHISTLE = 'O';  //鸣笛
-    private static final char CONTROL_VOICE_ON = 'P';  //开启声控
-    private static final char CONTROL_VOICE_OFF = 'Q';  //关闭声控
 
 
     private int mState;//小车当前的状态
     private int mSpeed;//小车当前的速度
     private Handler mHandlerThread;//连接线程的Handler，用于向子线程发送消息
 
-    //停止
-    public void stop() {
+    /**
+     * 停止
+     */
+
+    void stop() {
         send(CONTROL_PAUSE);
     }
 
-    //左转
-    public void turnLeft() {
+    /**
+     * 左转
+     */
+    void turnLeft() {
         send(CONTROL_TURNLEFT);
 
     }
 
-    //右转
-    public void turnRight() {
+    /**
+     * 右转
+     */
+    void turnRight() {
         send(CONTROL_TURNRIGHT);
 
     }
 
-    //后退
-    public void backward() {
+    /**
+     * 后退
+     */
+    void backward() {
         send(CONTROL_BACKWRAD);
     }
 
-    //左转45度后直行
-    public void left45() {
+    /**
+     * 左转45度后直行
+     */
+    void left45() {
         send(CONTROL_LEFT45);
     }
 
-    //右转45度后直行
-    public void right45() {
+    /**
+     * 右转45度后直行
+     */
+    void right45() {
         send(CONTROL_RIGHT45);
     }
 
-    //前行8s后停止
-    public void forward8s() {
+    /**
+     * 前行8s后停止
+     */
+
+    void forward8s() {
         send(CONTROL_FORWARD8S);
     }
 
 
-    //鸣笛
-    public void whistle() {
+    /**
+     * 鸣笛
+     */
+    void whistle() {
         send(CONTROL_WHISTLE);
     }
 
-    public void voiceOn() {
-        send(CONTROL_VOICE_ON);
-    }
-
-    public void voiceOff() {
-        send(CONTROL_VOICE_OFF);
-    }
-
-    public void controlSuccess() {
+    /**
+     * 建立连接成功
+     */
+    void controlSuccess() {
         send(CONTROL_CONNECT);
     }
 
@@ -110,11 +115,19 @@ public class Car {
     }
 
 
+    /**
+     * 设置小车当前运行状态，并发送给主线程
+     * @param state 小车状态
+     */
     public void setState(int state) {
         mState = state;
     }
 
-    public void setSpeed(int speed) {
+    /**
+     * 设置当前小车速度
+     * @param speed  小车速度
+     */
+    void setSpeed(int speed) {
         mSpeed = speed;
         switch (speed) {
             case 1:
@@ -150,7 +163,7 @@ public class Car {
         return mHandlerThread;
     }
 
-    public void setHandlerThread(Handler handlerThread) {
+    void setHandlerThread(Handler handlerThread) {
         mHandlerThread = handlerThread;
     }
 }

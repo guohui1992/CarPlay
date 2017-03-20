@@ -5,12 +5,9 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -28,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, SensorEventListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "MainActivity";
 
 
@@ -45,11 +42,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private SimpleAdapter mListAdapter;
     private ProgressDialog mProgress;//进度条对话框
 
-    private SensorManager mSensorManager;//传感器管理器
+//    private SensorManager mSensorManager;//传感器管理器
 
     private boolean isMove = false;//当前是否移动(可用重力感应控制方向)
-    private boolean isVoiceOn = false;
-    private Button mVoice;
 
     //用于接收消息的主线程的Handler
     private Handler mHandler;
@@ -78,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         IntentFilter filter2 = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(mReceiver, filter2);
         //获取系统传感器服务
-        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+//        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
     }
 
@@ -105,7 +100,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button speed4 = (Button) findViewById(R.id.speed4);
         Button speed5 = (Button) findViewById(R.id.speed5);
 
-        mVoice = (Button) findViewById(R.id.voiceOn);
         Button whistle = (Button) findViewById(R.id.whistle);
 
         Button left45 = (Button) findViewById(R.id.left45);
@@ -118,10 +112,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         pause.setOnClickListener(listener);
         turnLeft.setOnClickListener(listener);
         turnRight.setOnClickListener(listener);
-
-        mVoice.setOnClickListener(listener);
         whistle.setOnClickListener(listener);
-
         speed1.setOnClickListener(listener);
         speed2.setOnClickListener(listener);
         speed3.setOnClickListener(listener);
@@ -160,9 +151,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
         //为陀螺仪添加监听器
-        mSensorManager.registerListener(this,
-                mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY),
-                SensorManager.SENSOR_DELAY_NORMAL);
+//        mSensorManager.registerListener(this,
+//                mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY),
+//                SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     /**
@@ -229,6 +220,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     mProgress = new ProgressDialog(this);
                     mProgress.setIndeterminate(true);
                     mProgress.setMessage("正在搜索附近蓝牙设备...");
+                    mProgress.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            mAdapter.cancelDiscovery();
+                        }
+                    });
                     mProgress.show();
                 }
                 break;
@@ -255,39 +252,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    //传感器数据发生变化时回调
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        //获取触发事件的传感器类型
-        int sensorType = event.sensor.getType();
-        switch (sensorType) {
-//            case Sensor.TYPE_GRAVITY://陀螺仪
-//                if (isMove) {//如果正在行进
-//                    float y = event.values[1];
-//
-//                    if (y < -1) {//左转
-////                        mCar.turnLeft();
-//
-//                    } else if (y > 1) {//右转
-////                        mCar.turnRight();
-//
-//                    } else {//直行
-////                        mCar.forward();
-//                    }
-//                }
-//                break;
-
-        }
-//
-    }
-//
-//    //传感器精度发生变化时回调
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
-
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -297,7 +261,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //控制按钮的监听器
-    class ControlListener implements View.OnClickListener {
+    private class ControlListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
@@ -310,11 +274,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     case R.id.pause://停止
                         mCar.stop();
                         break;
-                    case R.id.turnLeft:
+                    case R.id.turnLeft://左转
                         mCar.turnLeft();
                         break;
 
-                    case R.id.turnRight:
+                    case R.id.turnRight://右转
                         mCar.turnRight();
                         break;
 
@@ -344,19 +308,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     case R.id.forward8s://直行8秒后停止
                         mCar.forward8s();
                         break;
-                    case R.id.whistle:
+                    case R.id.whistle://鸣笛
                         mCar.whistle();
-                        break;
-                    case R.id.voiceOn:
-                        if(isVoiceOn){//如果声控开启，则关闭
-                            mCar.voiceOff();
-                            isVoiceOn=false;
-                            mVoice.setText("开启声控");
-                        }else {//如果声控关闭，则开启
-                            mCar.voiceOn();
-                            isVoiceOn=true;
-                            mVoice.setText("关闭声控");
-                        }
                         break;
                 }
 

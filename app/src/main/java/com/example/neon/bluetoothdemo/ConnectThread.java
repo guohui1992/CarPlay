@@ -12,12 +12,13 @@ import java.util.UUID;
 
 /**
  * 用于与蓝牙设备建立连接，并发送和接收数据
+ * <p>
  * Created by Neon on 2017/2/21.
  */
 
 public class ConnectThread extends Thread {
     private static final String TAG = "ConnectThread";
-    private final String MY_UUID = "00001101-0000-1000-8000-00805F9B34FB";
+    private static final String MY_UUID = "00001101-0000-1000-8000-00805F9B34FB";
 
     private BluetoothDevice mDevice;
     private BluetoothSocket mSocket;
@@ -52,8 +53,6 @@ public class ConnectThread extends Thread {
             Message msg = mHandlerMain.obtainMessage(Constant.MESSAGE_CONNECT_SUCCESS);
             mHandlerMain.sendMessage(msg);
 
-//            read();//从小车读取数据
-
         } catch (IOException e) {
             //失败后发送消息
             Message msgFailed = mHandlerMain.obtainMessage(Constant.MESSAGE_CONNECT_FAILED);
@@ -65,6 +64,7 @@ public class ConnectThread extends Thread {
             }
 
         }
+
         Looper.loop();
 
 
@@ -76,86 +76,18 @@ public class ConnectThread extends Thread {
      *
      * @param s
      */
-    public void send(final String s) {
-        new Thread() {
-            @Override
-            public void run() {
-                super.run();
-                OutputStream os = null;
-                try {
-                    os = mSocket.getOutputStream();
-                    byte[] data = s.getBytes();
-                    os.write(data);
-                    mHandlerMain.sendEmptyMessage(Constant.MESSAGE_WRITE_SUCCESS);
-                } catch (Exception e) {
-                    mHandlerMain.sendEmptyMessage(Constant.MESSAGE_WRITE_FAILED);
-                }
-            }
-        }.start();
+    private void send(final String s) {
+        OutputStream os = null;
+        try {
+            os = mSocket.getOutputStream();
+            byte[] data = s.getBytes();
+            os.write(data);
+            mHandlerMain.sendEmptyMessage(Constant.MESSAGE_WRITE_SUCCESS);
+        } catch (Exception e) {
+            mHandlerMain.sendEmptyMessage(Constant.MESSAGE_WRITE_FAILED);
+        }
 
     }
-
-    //读取小车发过来的数据
-//    public void read() {
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                super.run();
-//                try {
-//                    InputStream is = mSocket.getInputStream();
-//                    byte data[] = new byte[8];
-//                    int hasRead;
-//                    while ((hasRead = is.read(data)) != -1) {
-//                        //发送过来的数据第一个字符是字母,后面有乱码,取字母
-//                        char c = new String(data, "ISO-8859-1").charAt(0);
-//                        String obj = "";
-//                        switch (c) {
-//                            case 'A':
-//                                obj = "前进";
-//                                break;
-//                            case 'B':
-//                                obj = "后退";
-//                                break;
-//                            case 'C':
-//                                obj = "左转";
-//                                break;
-//                            case 'D':
-//                                obj = "右转";
-//                                break;
-//                            case 'E':
-//                                obj = "0";
-//                                break;
-//                            case 'F':
-//                                obj = "1";
-//                                break;
-//                            case 'G':
-//                                obj = "2";
-//                                break;
-//                            case 'H':
-//                                obj = "3";
-//                                break;
-//                            case 'I':
-//                                obj = "4";
-//                                break;
-//                            case 'J':
-//                                obj = "5";
-//                                break;
-//                        }
-//                        Message msg = mHandlerMain.obtainMessage(Constant.MESSAGE_READ_SUCCESS);
-//                        msg.obj = obj;
-//                        mHandlerMain.sendMessage(msg);
-//
-////                        Log.d(TAG, "run: 读取"+hasRead+"位数据"+",字符为"+s);
-//                    }
-//                } catch (IOException e) {
-//                    //发送读取失败的消息
-//                    mHandlerMain.sendEmptyMessage(Constant.MESSAGE_READ_FAILED);
-//                }
-//            }
-//        }.start();
-//
-//
-//    }
 
     public Handler getHandlerSelf() {
         return mHandlerSelf;

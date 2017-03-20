@@ -3,4 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="turn">#dc5a09</color>
+    <color name="turnDark">#964c06</color>
+    <color name="stop">#cc1d16</color>
+    <color name="stopDark">#94130e</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
 </resources>
